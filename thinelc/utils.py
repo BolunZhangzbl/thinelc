@@ -1,24 +1,33 @@
-import re
-from thinelc import PyPBF
+# -- Public Imports
+
+
+# -- Private Imports
+
+
+# -- Global Variables
+
+
+# -- Functions
+
 
 def reduce(pbf, qpbf, mode, newvar):
     assert mode in (0, 1, 2)
     assert isinstance(newvar, int)
-    
-    if mode==0:
+
+    if mode == 0:
         pbf_tmp = pbf.copy()
         pbf_tmp.reduce_higher()
         pbf_tmp.to_quadratic(qpbf, newvar)
-        
-    elif mode==1:
+
+    elif mode == 1:
         pbf_tmp = pbf.copy()
         pbf_tmp.reduce_higher_approx()
         pbf_tmp.to_quadratic(qpbf, newvar)
     else:
         pbf_tmp = pbf.copy()
         pbf.to_quadratic(qpbf, newvar)
-        
-        
+
+
 def convert_numeric_string(num_str):
     # Strip any whitespace from the string
     num_str = num_str.strip()
@@ -30,18 +39,18 @@ def convert_numeric_string(num_str):
         return float(num_str)
     except ValueError:
         raise ValueError(f"Cannot convert '{num_str}' to a number.")
-        
-        
+
+
 def extract_coef_and_vars(input_string):
     # Use a regex to find the coefficient and the variable indices
     match = re.match(r'([-+]?\d*)x_\{([0-9]+)\}(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?', input_string)
-    
+
     if not match:
         raise ValueError(f"Input string format is incorrect: {input_string}")
 
     # Extract the coefficient
     coef_str = match.group(1)
-    
+
     # Determine the coefficient value
     if coef_str == '' or coef_str == '+':
         coef = 1
@@ -62,9 +71,8 @@ def extract_coef_and_vars(input_string):
     tuple_var = tuple(filter(None, variables))
 
     return coef, tuple_var
-    
-    
-        
+
+
 def parse_polynomial(input_string):
     input_string = input_string.strip()
     list_elems = input_string.split(" ")
@@ -72,71 +80,39 @@ def parse_polynomial(input_string):
     dict_quadratic = {}
     dict_higher = {}
     dict_constant = {(0): convert_numeric_string(list_elems[-1][1:])}
-    
+
     for elem in list_elems[:-1]:
         coef, tuple_var = extract_coef_and_vars(elem)
-        if elem.count('_')==1:
+        if elem.count('_') == 1:
             dict_linear[tuple_var] = coef
-        elif elem.count('_')==2:
+        elif elem.count('_') == 2:
             dict_quadratic[tuple_var] = coef
         else:
             dict_higher[tuple_var] = coef
-                
+
     return [dict_linear, dict_quadratic, dict_higher, dict_constant]
-    
 
 
-pbf = PyPBF()
-pbf.add_unary_term(0, 0, 1)  # E(x)
-pbf.add_unary_term(1, 0, 4)  # 4y
-pbf.add_unary_term(2, 0, -1) # -z
-pbf.add_pairwise_term(1, 3, 0, 2, 0, 0)  # -2(y-1)w
+def parse_input_dict(pbf, input_list):
+    assert len(input_list)>=1
 
-pbf.shrink()
-pbf.print()
-print("\n")
-
-vars3 = [0, 1, 2]
-vals3 = [0, 0, 0, 0, 0, 0, 1, 2]  # xy(z+1)
-pbf.add_higher_term(3, vars3, vals3)
-
-pbf.shrink()
-pbf.print()
-print("\n")
-
-vars4 = [0, 1, 2, 3]
-vals4 = [0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, -2, 0, -2, 0, -4]  # -xw(y+1)(z+1)
-pbf.add_higher_term(4, vars4, vals4)
-
-print("Higher-order Function: ")
-pbf.shrink()
-pbf.print()
-print("\n")
-
-print("Higher-order Function (Parsed String): ")
-str_pbf = pbf.get_string()
-str_pbf_parse = parse_polynomial(str_pbf)
-print(str_pbf_parse)
-print("\n")
-
-
-mode = 0
-qpbf = PyPBF()
-reduce(pbf, qpbf, mode, 4)
-
-print("Quadratic Function (mode 0 - ELC+HOCR): ")
-qpbf.shrink()
-qpbf.print()
-print("\n")
-
-
-print("Quadratic Function (String): ")
-str_qpbf = qpbf.get_string()
-print(str_qpbf)
-print("\n")
-
-print("Quadratic Function (Parsed String): ")
-str_qpbf = qpbf.get_string()
-str_qpbf_parse = parse_polynomial(str_qpbf)
-print(str_qpbf_parse)
-print("\n")
+    constant_val = input_list[-1]
+    for deg, dict_elem in enumerate(input_list[:-1]):
+        assert isinstance(dict_elem, dict)
+        if deg==0:
+            for idx, (key, coef) in enumerate(dict_elem.items()):
+                if idx==0:
+                    pbf.add_unary_term(key, constant_val, constant_val+coef)
+                else:
+                    pbf.add_unary_term(key, 0, coef)
+        elif deg==1:
+            for idx, (key, coef) in enumerate(dict_elem.items()):
+                pbf.add_pairwise_term(key[0], key[1], 0, 0, 0, coef)
+        else:
+            for idx, (key, coef) in enumerate(dict_elem.items()):
+                order = deg+1
+                vars = list(key)
+                vals = [0] * 2**order
+                vals[-1] = coef
+                pbf.add_higher_term(order, vars, vals)
+    return pbf
