@@ -2,7 +2,24 @@ from setuptools import setup, Extension
 import os
 import sys
 
-include_path = os.path.abspath(os.path.dirname(__file__))
+# include_path = os.path.abspath(os.path.dirname(__file__))
+
+class LazyCythonize(list):
+    def __init__(self, callback):
+        self._list, self.callback = None, callback
+
+    def c_list(self):
+        if self._list is None:
+            self._list = self.callback()
+        return self._list
+
+    def __iter__(self):
+        for e in self.c_list():
+            yield e
+
+    def __getitem__(self, ii): return self.c_list()[ii]
+
+    def __len__(self): return len(self.c_list())
 
 # Modify extra_compile_args based on platform
 if sys.platform == 'win32':
@@ -44,7 +61,7 @@ setup(
     description="A thin ELC Wrapper for Python",
     url="https://github.com/BolunZhangzbl/thinelc",
     packages=["thinelc"],
-    ext_modules=extensions_func(),
+    ext_modules=LazyCythonize(extensions_func),
     setup_requires=["Cython"],
     install_requires=["Cython"],
 )   
