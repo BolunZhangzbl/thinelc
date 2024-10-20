@@ -24,6 +24,7 @@ extensions = [
 ]
 
 setup(
+    version="0.01",
     name="thinelc",
     author="Bolun Zhang",
     author_email="bolun_zhangzbl@outlook.com",
