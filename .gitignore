@@ -1,0 +1,15 @@
+thinelc/*.h
+thinelc/*.pyd
+thinelc/.*cpp
+
+# Python bytecode files
+__pycache__/
+*.py[cod]
+
+# environments
+venv/
+
+dist/
+build/
+cython_debug/
+*.egg-info/

@@ -35,7 +35,6 @@ setup(
         extensions, 
         compiler_directives={"language_level": "3"},  
         gdb_debug=True,
-        force=True
     ),
     setup_requires=["setuptools>=42", "wheel", "Cython"], 
     install_requires=["Cython"],
