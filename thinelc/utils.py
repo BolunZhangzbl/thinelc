@@ -1,8 +1,8 @@
 # -- Public Imports
-
+import re
 
 # -- Private Imports
-
+from thinelc import PyPBF
 
 # -- Global Variables
 
@@ -25,7 +25,7 @@ def reduce(pbf, qpbf, mode, newvar):
         pbf_tmp.to_quadratic(qpbf, newvar)
     else:
         pbf_tmp = pbf.copy()
-        pbf.to_quadratic(qpbf, newvar)
+        pbf_tmp.to_quadratic(qpbf, newvar)
 
 
 def convert_numeric_string(num_str):
@@ -43,7 +43,7 @@ def convert_numeric_string(num_str):
 
 def extract_coef_and_vars(input_string):
     # Use a regex to find the coefficient and the variable indices
-    match = re.match(r'([-+]?\d*)x_\{([0-9]+)\}(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?', input_string)
+    match = re.match(r'([-+]?\d*)x_\{([0-9]+)\}?(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?', input_string)
 
     if not match:
         raise ValueError(f"Input string format is incorrect: {input_string}")
@@ -59,21 +59,22 @@ def extract_coef_and_vars(input_string):
     else:
         coef = int(coef_str)
 
-    # Extract variable indices, ignoring None matches
-    variables = [
-        int(match.group(2)) if match.group(2) else None,
-        int(match.group(4)) if match.group(4) else None,
-        int(match.group(6)) if match.group(6) else None,
-        int(match.group(8)) if match.group(8) else None
-    ]
+    # Extract variable indices and subtract 1 to make them 0-indexed
+    variables = []
+    for i in range(2, 8, 2):  # Match groups for variable indices
+        if match.group(i):
+            variables.append(int(match.group(i)) - 1)
 
-    # Remove None values and create a tuple
-    tuple_var = tuple(filter(None, variables))
+    # Remove duplicates by converting to a set and then back to a sorted list
+    variables = sorted(set(variables))
+
+    # Create a tuple of the variable indices
+    tuple_var = tuple(variables)
 
     return coef, tuple_var
 
 
-def parse_polynomial(input_string):
+def parse_polynomial(input_string, quadratic=False):
     input_string = input_string.strip()
     list_elems = input_string.split(" ")
     dict_linear = {}
@@ -90,7 +91,9 @@ def parse_polynomial(input_string):
         else:
             dict_higher[tuple_var] = coef
 
-    return [dict_linear, dict_quadratic, dict_higher, dict_constant]
+    list_results = [dict_linear, dict_quadratic, dict_constant] if quadratic else [dict_linear, dict_quadratic, dict_higher, dict_constant]
+
+    return list_results
 
 
 def parse_input_dict(pbf, input_list):
@@ -116,3 +119,26 @@ def parse_input_dict(pbf, input_list):
                 vals[-1] = coef
                 pbf.add_higher_term(order, vars, vals)
     return pbf
+
+
+def e2e_pipeline(input_list, mode):
+    ### 1. Parse the input list to ELC polynomial
+    pbf = PyPBF()
+    pbf = parse_input_dict(pbf, input_list)
+    num_vars = len(input_list) - 1
+    newvar = num_vars   # the idx of new variables
+
+    ### 2. Perform ELC reduction, pbf -> qpbf
+    qpbf = PyPBF()
+    reduce(pbf, qpbf, mode, newvar)
+
+    ### 3. Parse ELC polynomial, qpbf -> output list
+    str_qpbf = qpbf.get_string()
+    print(str_qpbf)
+    output_list = parse_polynomial(str_qpbf, True)
+    print(output_list)
+
+    return output_list
+
+
+

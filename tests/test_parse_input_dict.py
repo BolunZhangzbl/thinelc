@@ -1,5 +1,5 @@
 from thinelc import PyPBF
-from thinelc.utils import parse_input_dict
+from thinelc.utils import *
 
 
 pbf = PyPBF()
@@ -43,3 +43,11 @@ pbf2.print()
 
 
 print(pbf.get_string() == pbf2.get_string())
+print("\n")
+
+
+print("test e2e_pipeline: ")
+output_list = e2e_pipeline(input_list, 0)
+print(output_list[0])
+print(output_list)
+print("\n")
