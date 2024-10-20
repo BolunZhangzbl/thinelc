@@ -15,7 +15,7 @@ else:
 
 extensions = [
     Extension(
-        name="thinelc",  
+        name="thinelc.thinelc",
         sources=["thinelc/thinelc.pyx"],
         language="c++",   
         extra_compile_args=extra_compile_args,
