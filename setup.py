@@ -45,6 +45,6 @@ setup(
     url="https://github.com/BolunZhangzbl/thinelc",
     packages=["thinelc"],
     ext_modules=extensions_func(),
-    setup_requires=["setuptools>=42", "wheel", "Cython"], 
+    setup_requires=["Cython"],
     install_requires=["Cython"],
 )   
