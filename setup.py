@@ -1,5 +1,4 @@
 from setuptools import setup, Extension
-from Cython.Build import cythonize
 import os
 import sys
 
@@ -23,6 +22,20 @@ extensions = [
     )
 ]
 
+def extensions_func():
+    from Cython.Build import cythonize
+    extensions = [
+        Extension(
+            name="thinelc.thinelc",
+            sources=["thinelc/thinelc.pyx"],
+            language="c++",
+            extra_compile_args=extra_compile_args,
+            extra_link_args=extra_link_args,
+        )
+    ]
+
+    return cythonize(extensions, compiler_directives={"language_level": "3"}, gdb_debug=True, force=True)
+
 setup(
     version="0.01",
     name="thinelc",
@@ -31,11 +44,7 @@ setup(
     description="A thin ELC Wrapper for Python",
     url="https://github.com/BolunZhangzbl/thinelc",
     packages=["thinelc"],
-    ext_modules=cythonize(
-        extensions, 
-        compiler_directives={"language_level": "3"},  
-        gdb_debug=True,
-    ),
+    ext_modules=extensions_func(),
     setup_requires=["setuptools>=42", "wheel", "Cython"], 
     install_requires=["Cython"],
 )   
