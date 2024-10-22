@@ -15,7 +15,7 @@ class TestCommand(install):
         if test_result != 0:
             raise Exception("Tests failed. Installation aborted.")
         else:
-            print("All ")
+            print("All tests passed! Installation Successful.")
 
 class LazyCythonize(list):
     def __init__(self, callback):
