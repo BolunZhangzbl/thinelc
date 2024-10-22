@@ -9,9 +9,19 @@ class TestPyPBF(unittest.TestCase):
         self.pbf = PyPBF()
 
     def test_get_string(self):
+        self.pbf = PyPBF()
         self.pbf.add_unary_term(0, 0, 1)  # E(x)
         self.pbf.add_unary_term(1, 0, 4)  # 4y
         self.pbf.add_unary_term(2, 0, -1) # -z
+        self.pbf.add_pairwise_term(1, 3, 0, 2, 0, 0)  # -2(y-1)w
+
+        vars3 = [0, 1, 2]
+        vals3 = [0, 0, 0, 0, 0, 0, 1, 2]  # xy(z+1)
+        self.pbf.add_higher_term(3, vars3, vals3)
+
+        vars4 = [0, 1, 2, 3]
+        vals4 = [0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, -2, 0, -2, 0, -4]  # -xw(y+1)(z+1)
+        self.pbf.add_higher_term(4, vars4, vals4)
 
         self.pbf.shrink()
         str_pbf = self.pbf.get_string()
@@ -59,8 +69,8 @@ class TestPyPBF(unittest.TestCase):
         str_qpbf = self.qpbf.get_string()
         output_list = parse_polynomial(str_qpbf, quadratic=True)
 
-        reference_list = [{(1,): 3, (2,): 4, (3,): -1, (4,): 3},
-                          {(2, 4): -4, (1, 2): 2, (1, 4): -4, (3, 4): 1, (1, 3): -2}, {}, {0: 0}]
+        reference_list = [{(0,): 3, (1,): 4, (2,): -1, (3,): 3},
+                          {(1, 3): -4, (0, 1): 2, (0, 3): -4, (2, 3): 1, (0, 2): -2}, {0: 0}]
         self.assertEqual(reference_list, output_list)
 
     def test_e2e_pipeline(self):
@@ -70,8 +80,8 @@ class TestPyPBF(unittest.TestCase):
                       {(0, 1, 2, 3): -1},
                       0]
         output_list = e2e_pipeline(input_list, mode=0)
-        reference_list = [{(1,): 3, (2,): 4, (3,): -1, (4,): 3},
-                          {(2, 4): -4, (1, 2): 2, (1, 4): -4, (3, 4): 1, (1, 3): -2}, {}, {0: 0}]
+        reference_list = [{(0,): 3, (1,): 4, (2,): -1, (3,): 3},
+                          {(1, 3): -4, (0, 1): 2, (0, 3): -4, (2, 3): 1, (0, 2): -2}, {0: 0}]
         self.assertEqual(reference_list, output_list)
 
 if __name__ == '__main__':

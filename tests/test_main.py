@@ -34,14 +34,14 @@ def convert_numeric_string(num_str):
         
 def extract_coef_and_vars(input_string):
     # Use a regex to find the coefficient and the variable indices
-    match = re.match(r'([-+]?\d*)x_\{([0-9]+)\}(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?', input_string)
-    
+    match = re.match(r'([-+]?\d*)x_\{([0-9]+)\}?(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?', input_string)
+
     if not match:
         raise ValueError(f"Input string format is incorrect: {input_string}")
 
     # Extract the coefficient
     coef_str = match.group(1)
-    
+
     # Determine the coefficient value
     if coef_str == '' or coef_str == '+':
         coef = 1
@@ -50,19 +50,19 @@ def extract_coef_and_vars(input_string):
     else:
         coef = int(coef_str)
 
-    # Extract variable indices, ignoring None matches
-    variables = [
-        int(match.group(2)) if match.group(2) else None,
-        int(match.group(4)) if match.group(4) else None,
-        int(match.group(6)) if match.group(6) else None,
-        int(match.group(8)) if match.group(8) else None
-    ]
+    # Extract variable indices and subtract 1 to make them 0-indexed
+    variables = []
+    for i in range(2, 8, 2):  # Match groups for variable indices
+        if match.group(i):
+            variables.append(int(match.group(i)) - 1)
 
-    # Remove None values and create a tuple
-    tuple_var = tuple(filter(None, variables))
+    # Remove duplicates by converting to a set and then back to a sorted list
+    variables = sorted(set(variables))
+
+    # Create a tuple of the variable indices
+    tuple_var = tuple(variables)
 
     return coef, tuple_var
-    
     
         
 def parse_polynomial(input_string):
