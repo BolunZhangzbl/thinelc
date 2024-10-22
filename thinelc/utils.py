@@ -15,16 +15,16 @@ def reduce(pbf, qpbf, mode, newvar):
     assert isinstance(newvar, int)
 
     if mode == 0:
-        pbf_tmp = pbf.copy()
+        pbf_tmp = pbf
         pbf_tmp.reduce_higher()
         pbf_tmp.to_quadratic(qpbf, newvar)
 
     elif mode == 1:
-        pbf_tmp = pbf.copy()
+        pbf_tmp = pbf
         pbf_tmp.reduce_higher_approx()
         pbf_tmp.to_quadratic(qpbf, newvar)
     else:
-        pbf_tmp = pbf.copy()
+        pbf_tmp = pbf
         pbf_tmp.to_quadratic(qpbf, newvar)
 
 

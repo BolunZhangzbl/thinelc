@@ -1,8 +1,21 @@
 from setuptools import setup, Extension
+from setuptools.command.install import install
+import subprocess
 import os
 import sys
 
 # include_path = os.path.abspath(os.path.dirname(__file__))
+
+class TestCommand(install):
+    def run(self):
+
+        install.run(self)
+        test_result = subprocess.call([os.path.join(os.path.dirname(__file__), "tests", "test.py")])
+
+        if test_result != 0:
+            raise Exception("Tests failed. Installation aborted.")
+        else:
+            print("All ")
 
 class LazyCythonize(list):
     def __init__(self, callback):
@@ -64,4 +77,5 @@ setup(
     ext_modules=LazyCythonize(extensions_func),
     setup_requires=["Cython"],
     install_requires=["Cython"],
+    cmdclass={"install": TestCommand,},
 )   
