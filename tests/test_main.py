@@ -1,5 +1,5 @@
 import re
-from thinelc import PyPBF
+from thinelc import PyPBFInt
 
 def reduce(pbf, qpbf, mode, newvar):
     assert mode in (0, 1, 2)
@@ -86,7 +86,7 @@ def parse_polynomial(input_string):
     
 
 
-pbf = PyPBF()
+pbf = PyPBFInt()
 pbf.add_unary_term(0, 0, 1)  # E(x)
 pbf.add_unary_term(1, 0, 4)  # 4y
 pbf.add_unary_term(2, 0, -1) # -z
@@ -121,7 +121,7 @@ print("\n")
 
 
 mode = 0
-qpbf = PyPBF()
+qpbf = PyPBFInt()
 reduce(pbf, qpbf, mode, 4)
 
 print("Quadratic Function (mode 0 - ELC+HOCR): ")

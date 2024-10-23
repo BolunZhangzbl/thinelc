@@ -2,7 +2,7 @@
 import re
 
 # -- Private Imports
-from thinelc import PyPBF
+from thinelc import PyPBFInt, PyPBFFloat
 
 # -- Global Variables
 
@@ -41,9 +41,12 @@ def convert_numeric_string(num_str):
         raise ValueError(f"Cannot convert '{num_str}' to a number.")
 
 
-def extract_coef_and_vars(input_string):
+def extract_coef_and_vars(input_string, use_int=True):
     # Use a regex to find the coefficient and the variable indices
-    match = re.match(r'([-+]?\d*)x_\{([0-9]+)\}?(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?', input_string)
+    if use_int:
+        match = re.match(r'([-+]?\d*)x_\{([0-9]+)\}?(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?', input_string)
+    else:
+        match = re.match(r'([-+]?\d*\.?\d*)x_\{([0-9]+)\}(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?(x_\{([0-9]+)\})?', input_string)
 
     if not match:
         raise ValueError(f"Input string format is incorrect: {input_string}")
@@ -53,11 +56,11 @@ def extract_coef_and_vars(input_string):
 
     # Determine the coefficient value
     if coef_str == '' or coef_str == '+':
-        coef = 1
+        coef = 1 if use_int else float(coef_str)
     elif coef_str == '-':
-        coef = -1
+        coef = -1 if use_int else float(coef_str)
     else:
-        coef = int(coef_str)
+        coef = int(coef_str) if use_int else float(coef_str)
 
     # Extract variable indices and subtract 1 to make them 0-indexed
     variables = []
@@ -66,24 +69,25 @@ def extract_coef_and_vars(input_string):
             variables.append(int(match.group(i)) - 1)
 
     # Remove duplicates by converting to a set and then back to a sorted list
-    variables = sorted(set(variables))
+    # variables = sorted(set(variables))
 
     # Create a tuple of the variable indices
     tuple_var = tuple(variables)
+    tuple_var = tuple_var[0] if len(tuple_var)==1 else tuple_var
 
     return coef, tuple_var
 
 
-def parse_polynomial(input_string, quadratic=False):
+def parse_polynomial(input_string, quadratic=False, use_int=True):
     input_string = input_string.strip()
     list_elems = input_string.split(" ")
     dict_linear = {}
     dict_quadratic = {}
     dict_higher = {}
-    dict_constant = {(0): convert_numeric_string(list_elems[-1][1:])}
+    dict_constant = {0: convert_numeric_string(list_elems[-1][1:])}
 
     for elem in list_elems[:-1]:
-        coef, tuple_var = extract_coef_and_vars(elem)
+        coef, tuple_var = extract_coef_and_vars(elem, use_int=use_int)
         if elem.count('_') == 1:
             dict_linear[tuple_var] = coef
         elif elem.count('_') == 2:
@@ -121,21 +125,22 @@ def parse_input_dict(pbf, input_list):
     return pbf
 
 
-def e2e_pipeline(input_list, mode):
+def e2e_pipeline(input_list, mode, use_int=True):
+
     ### 1. Parse the input list to ELC polynomial
-    pbf = PyPBF()
+    pbf = PyPBFInt() if use_int else PyPBFFloat()
     pbf = parse_input_dict(pbf, input_list)
     num_vars = len(input_list) - 1
     newvar = num_vars   # the idx of new variables
 
     ### 2. Perform ELC reduction, pbf -> qpbf
-    qpbf = PyPBF()
+    qpbf = PyPBFInt() if use_int else PyPBFFloat()
     reduce(pbf, qpbf, mode, newvar)
 
     ### 3. Parse ELC polynomial, qpbf -> output list
     str_qpbf = qpbf.get_string()
     print(str_qpbf)
-    output_list = parse_polynomial(str_qpbf, True)
+    output_list = parse_polynomial(str_qpbf, quadratic=True, use_int=use_int)
     print(output_list)
 
     return output_list

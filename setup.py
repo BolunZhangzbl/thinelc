@@ -34,6 +34,7 @@ class LazyCythonize(list):
 
     def __len__(self): return len(self.c_list())
 
+
 # Modify extra_compile_args based on platform
 if sys.platform == 'win32':
     extra_compile_args = ["/std:c++11", "/W3", "/O2"]  # MSVC compatible flags
@@ -59,8 +60,8 @@ def extensions_func():
             name="thinelc.thinelc",
             sources=["thinelc/thinelc.pyx"],
             language="c++",
-            extra_compile_args=extra_compile_args,
-            extra_link_args=extra_link_args,
+            # extra_compile_args=extra_compile_args,
+            # extra_link_args=extra_link_args,
         )
     ]
 
@@ -77,5 +78,4 @@ setup(
     ext_modules=LazyCythonize(extensions_func),
     setup_requires=["Cython"],
     install_requires=["Cython"],
-    cmdclass={"install": TestCommand,},
 )   

@@ -996,10 +996,10 @@ namespace ELCReduce {
 
 
 
-	template<typename REAL>
-	PBF<REAL>* PBF_copy(const PBF<REAL>& pbf) {
-		return new PBF<REAL>(pbf);
-	}
+template<typename REAL>
+    PBF<REAL>* PBF_copy(const PBF<REAL>& pbf) {
+        return new PBF<REAL>(pbf);
+    }
 
 
 

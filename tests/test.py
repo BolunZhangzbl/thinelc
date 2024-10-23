@@ -1,15 +1,15 @@
 import unittest
-from thinelc import PyPBF
+from thinelc import PyPBFInt, PyPBFFloat
 from thinelc.utils import *
 
 
 class TestPyPBF(unittest.TestCase):
 
     def setUp(self):
-        self.pbf = PyPBF()
+        self.pbf = PyPBFInt()
 
     def test_get_string(self):
-        self.pbf = PyPBF()
+        self.pbf = PyPBFInt()
         self.pbf.add_unary_term(0, 0, 1)  # E(x)
         self.pbf.add_unary_term(1, 0, 4)  # 4y
         self.pbf.add_unary_term(2, 0, -1) # -z
@@ -30,7 +30,7 @@ class TestPyPBF(unittest.TestCase):
         self.assertEqual(str_func.strip(), str_pbf.strip())
 
     def test_parse_input_dict(self):
-        self.pbf_tmp = PyPBF()
+        self.pbf_tmp = PyPBFInt()
         input_list = [{0: 1, 1: 4, 2: -1, 3: 2},
                       {(1, 3): -2, (0, 1): 1, (0, 3): -1},
                       {(0, 1, 2): 1, (0, 2, 3): -1, (0, 1, 3): -1},
@@ -42,8 +42,8 @@ class TestPyPBF(unittest.TestCase):
         self.assertEqual(str_func.strip(), str_pbf.strip())
 
     def test_reduce(self):
-        self.pbf_tmp = PyPBF()
-        self.qpbf = PyPBF()
+        self.pbf_tmp = PyPBFInt()
+        self.qpbf = PyPBFInt()
 
         input_list = [{0: 1, 1: 4, 2: -1, 3: 2},
                       {(1, 3): -2, (0, 1): 1, (0, 3): -1},
@@ -57,8 +57,8 @@ class TestPyPBF(unittest.TestCase):
         self.assertEqual(str_func.strip(), str_qpbf.strip())
 
     def test_parse_polynomial(self):
-        self.pbf_tmp = PyPBF()
-        self.qpbf = PyPBF()
+        self.pbf_tmp = PyPBFInt()
+        self.qpbf = PyPBFInt()
         input_list = [{0: 1, 1: 4, 2: -1, 3: 2},
                       {(1, 3): -2, (0, 1): 1, (0, 3): -1},
                       {(0, 1, 2): 1, (0, 2, 3): -1, (0, 1, 3): -1},

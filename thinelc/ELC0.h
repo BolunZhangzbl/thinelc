@@ -109,16 +109,29 @@ public:
 	//Print terms
 	void print(REAL& constant)
 	{
-		for (int deg = 1; deg < termsD.size(); deg++)
-			for (int i = 0; i < termsD[deg]->size(); i++)
-			{
-				std::printf(" %+i", termsD[deg]->coef(i));
-				auto idx = termsD[deg]->getVIt(i);
-				for (int it = 0; it < deg; it++)
-					std::printf("x_{%i}", *(idx + it) + 1); //shift variables to start from 1
-			}
+	    for (int deg = 1; deg < termsD.size(); deg++)
+	    {
+	        for (int i = 0; i < termsD[deg]->size(); i++)
+	        {
+	            // Check if REAL is float or double and print using the correct specifier
+	            if constexpr (std::is_same<REAL, int>::value) {
+	                std::printf(" %+i", termsD[deg]->coef(i));  // For integer types
+	            } else {
+	                std::printf(" %+f", termsD[deg]->coef(i));  // For floating point types
+	            }
 
-		std::printf(" %+i\n", constant);
+	            auto idx = termsD[deg]->getVIt(i);
+	            for (int it = 0; it < deg; it++)
+	                std::printf("x_{%i}", *(idx + it) + 1);  // Shift variables to start from 1
+	        }
+	    }
+
+	    // Print the constant term, using the correct format based on its type
+	    if constexpr (std::is_same<REAL, int>::value) {
+	        std::printf(" %+i\n", constant);
+	    } else {
+	        std::printf(" %+f\n", constant);
+	    }
 	}
 
 	SStr getString(REAL& constant) {
