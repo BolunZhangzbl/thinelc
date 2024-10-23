@@ -81,6 +81,9 @@ cdef public class PyPBFInt[object PyObject_PyPBFInt, type PyPBFInt]:
     def reduce_higher_approx(self):
         self.c_pbf.reduceHigherApprox()
 
+    def to_quadratic(self, PyPBFInt qpbf, int newvar, int W):
+        self.c_pbf.toQuadratic(qpbf.c_pbf[0], newvar, W)
+
     def to_quadratic(self, PyPBFInt qpbf, int newvar):
         self.c_pbf.toQuadratic(qpbf.c_pbf[0], newvar)
 		
@@ -149,6 +152,9 @@ cdef public class PyPBFFloat[object PyObject_PyPBFFloat, type PyPBFFloat]:
 
     def reduce_higher_approx(self):
         self.c_pbf.reduceHigherApprox()
+
+    def to_quadratic_tin(self, PyPBFFloat qpbf, int newvar, int W):
+        self.c_pbf.toQuadratic_Tin(qpbf.c_pbf[0], newvar, W)
 
     def to_quadratic(self, PyPBFFloat qpbf, int newvar):
         self.c_pbf.toQuadratic(qpbf.c_pbf[0], newvar)

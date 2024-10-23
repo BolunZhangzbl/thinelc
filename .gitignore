@@ -6,6 +6,9 @@ thinelc/.*cpp
 __pycache__/
 *.py[cod]
 
+# tests
+tests/test_tmp.py
+
 # environments
 venv/
 

@@ -1,6 +1,8 @@
 from thinelc import PyPBFInt, PyPBFFloat
 from thinelc.utils import *
+import os
 
+abs_path = os.path.abspath(os.path.dirname(__file__))
 
 pbf = PyPBFInt()
 pbf.add_unary_term(0, 0, 1)  # E(x)
@@ -36,6 +38,7 @@ input_list = [{0: 1, 1: 4, 2: -1, 3: 2},
               {(0,1,2): 1, (0,2,3):-1, (0,1,3):-1},
               {(0,1,2,3):-1},
               0]
+save_data(input_list, os.path.join(abs_path, "Q_4_matrix_int.pkl"))
 pbf2 = PyPBFInt()
 pbf2 = parse_input_dict(pbf2, input_list)
 pbf2.shrink()

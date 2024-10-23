@@ -1,5 +1,7 @@
 # -- Public Imports
+import os.path
 import re
+import pickle
 
 # -- Private Imports
 from thinelc import PyPBFInt, PyPBFFloat
@@ -8,6 +10,18 @@ from thinelc import PyPBFInt, PyPBFFloat
 
 
 # -- Functions
+
+def save_data(data, filepath):
+    with open(filepath, 'wb') as f:
+        pickle.dump(data, f)
+    print(f"{os.path.basename(filepath)} has been saved to {filepath}.")
+
+
+def load_data(filepath):
+    with open(filepath, 'rb') as f:
+        data = pickle.load(f)
+    print(f"{os.path.basename(filepath)} has been loaded from {filepath}.")
+    return data
 
 
 def reduce(pbf, qpbf, mode, newvar):
@@ -23,9 +37,13 @@ def reduce(pbf, qpbf, mode, newvar):
         pbf_tmp = pbf
         pbf_tmp.reduce_higher_approx()
         pbf_tmp.to_quadratic(qpbf, newvar)
-    else:
+    elif mode == 2:
         pbf_tmp = pbf
         pbf_tmp.to_quadratic(qpbf, newvar)
+    else:
+        pbf_tmp = pbf
+        pbf_tmp.reduce_higher()
+        pbf_tmp.to_quadratic
 
 
 def convert_numeric_string(num_str):
@@ -128,14 +146,20 @@ def parse_input_dict(pbf, input_list):
 def e2e_pipeline(input_list, mode, use_int=True):
 
     ### 1. Parse the input list to ELC polynomial
-    pbf = PyPBFInt() if use_int else PyPBFFloat()
+    pbf = PyPBFInt() if use_int else PyPBFFloat(20)
     pbf = parse_input_dict(pbf, input_list)
     num_vars = len(input_list) - 1
     newvar = num_vars   # the idx of new variables
 
+    pbf.shrink()
+    pbf.print()
+
     ### 2. Perform ELC reduction, pbf -> qpbf
-    qpbf = PyPBFInt() if use_int else PyPBFFloat()
+    qpbf = PyPBFInt() if use_int else PyPBFFloat(20)
     reduce(pbf, qpbf, mode, newvar)
+
+    qpbf.shrink()
+    qpbf.print()
 
     ### 3. Parse ELC polynomial, qpbf -> output list
     str_qpbf = qpbf.get_string()
