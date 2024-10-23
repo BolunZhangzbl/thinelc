@@ -74,9 +74,9 @@ def extract_coef_and_vars(input_string, use_int=True):
 
     # Determine the coefficient value
     if coef_str == '' or coef_str == '+':
-        coef = 1 if use_int else float(coef_str)
+        coef = 1 if use_int else 1.0
     elif coef_str == '-':
-        coef = -1 if use_int else float(coef_str)
+        coef = -1 if use_int else -1.0
     else:
         coef = int(coef_str) if use_int else float(coef_str)
 
@@ -150,21 +150,23 @@ def e2e_pipeline(input_list, mode, use_int=True):
     pbf = parse_input_dict(pbf, input_list)
     num_vars = len(input_list) - 1
     newvar = num_vars   # the idx of new variables
-
+    print("Higher-Order Function: ")
     pbf.shrink()
     pbf.print()
+    print("\n")
 
     ### 2. Perform ELC reduction, pbf -> qpbf
     qpbf = PyPBFInt() if use_int else PyPBFFloat(20)
     reduce(pbf, qpbf, mode, newvar)
-
+    print("Quadratic Function: ")
     qpbf.shrink()
     qpbf.print()
+    print("\n")
 
     ### 3. Parse ELC polynomial, qpbf -> output list
     str_qpbf = qpbf.get_string()
-    print(str_qpbf)
     output_list = parse_polynomial(str_qpbf, quadratic=True, use_int=use_int)
+    print("Output List: ")
     print(output_list)
 
     return output_list

@@ -53,6 +53,6 @@ print("\n")
 qpbf = PyPBFFloat()
 
 
-print("test e2e_pipeline: ")
+print("test e2e_pipeline: \n")
 output_list = e2e_pipeline(input_list, mode=0, use_int=False)
 print("\n")
