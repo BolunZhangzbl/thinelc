@@ -1,33 +1,20 @@
 # Thin wrapper for ELC
 Thin Python wrapper for a modified version of the Higher-Order Clique Reduction without Auxiliary Variables (ELC) algorithm by Vladimir Kolmogorov. The original source code by Vladimir Kolmogorov availbable at http://pub.ist.ac.at/~vnk/software.html.
 
+## Graph types
+Currently, there are three different types of graphs: `PyPBFInt` and `PyPBFFloat`. The only difference is the underlying datatypes used for the edge capacities in the graph. For stability, it is recommended to use `PyPBFInt` for integer capacities and `PyPBFFloat` for floating point capacities. 
+
+
 ## Installation
 Install package using `pip install thinelc` or clone this repository (including. Building the package requires Cython.
 
 ## Tiny example
 ```python
-from thinelc import PyPBF
-
-
-def reduce(pbf, qpbf, mode, newvar):
-    assert mode in (0, 1, 2)
-    assert isinstance(newvar, int)
-    
-    if mode==0:
-        pbf_tmp = pbf.copy()
-        pbf_tmp.reduce_higher()
-        pbf_tmp.to_quadratic(qpbf, newvar)
-        
-    elif mode==1:
-        pbf_tmp = pbf.copy()
-        pbf_tmp.reduce_higher_approx()
-        pbf_tmp.to_quadratic(qpbf, newvar)
-    else:
-        pbf_tmp = pbf.copy()
-        pbf.to_quadratic(qpbf, newvar)
+from thinelc import PyPBFInt
+from thinelc.utils import *
 
 # Create graph object.
-pbf = PyPBF()
+pbf = PyPBFInt()
 
 # Add edges.
 pbf.add_unary_term(0, 0, 1)  # E(x)
@@ -49,7 +36,7 @@ pbf.print()
 print("\n")
 
 mode = 0
-qpbf = PyPBF()
+qpbf = PyPBFInt()
 reduce(pbf, qpbf, mode, 4)
 
 print("Quadratic Function (mode 0 - ELC+HOCR): ")
