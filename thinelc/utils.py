@@ -37,13 +37,9 @@ def reduce(pbf, qpbf, mode, newvar):
         pbf_tmp = pbf
         pbf_tmp.reduce_higher_approx()
         pbf_tmp.to_quadratic(qpbf, newvar)
-    elif mode == 2:
-        pbf_tmp = pbf
-        pbf_tmp.to_quadratic(qpbf, newvar)
     else:
         pbf_tmp = pbf
-        pbf_tmp.reduce_higher()
-        pbf_tmp.to_quadratic
+        pbf_tmp.to_quadratic(qpbf, newvar)
 
 
 def convert_numeric_string(num_str):
@@ -157,7 +153,7 @@ def e2e_pipeline(input_list, mode, use_int=True):
 
     ### 2. Perform ELC reduction, pbf -> qpbf
     qpbf = PyPBFInt() if use_int else PyPBFFloat(20)
-    reduce(pbf, qpbf, mode, newvar)
+    reduce(pbf, qpbf, mode, 4)
     print("Quadratic Function: ")
     qpbf.shrink()
     qpbf.print()

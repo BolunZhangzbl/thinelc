@@ -51,5 +51,14 @@ print("\n")
 qpbf = PyPBFInt()
 
 # print("test e2e_pipeline: ")
+print("mode 0: ")
 output_list = e2e_pipeline(input_list, 0)
+print("\n")
+
+print("mode 1: ")
+output_list1 = e2e_pipeline(input_list, 1)
+print("\n")
+
+print("mode 2: ")
+output_list2 = e2e_pipeline(input_list, 2)
 print("\n")

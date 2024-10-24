@@ -77,5 +77,4 @@ setup(
     packages=["thinelc"],
     ext_modules=LazyCythonize(extensions_func),
     setup_requires=["Cython"],
-    install_requires=["Cython"],
 )   
