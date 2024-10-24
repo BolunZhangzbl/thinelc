@@ -55,15 +55,15 @@ qpbf = PyPBFFloat()
 
 print("test e2e_pipeline: \n")
 print("mode 0: ")
-output_list = e2e_pipeline(input_list, 0, False)
+output_list, num_newvars = e2e_pipeline(input_list, 0, False)
 print("\n")
 
 # print("mode 1: ")
-# output_list1 = e2e_pipeline(input_list, 1, False)
+# output_list1, num_newvars1 = e2e_pipeline(input_list, 1, False)
 # print("\n")
 #
 # print("mode 2: ")
-# output_list2 = e2e_pipeline(input_list, 2, False)
+# output_list2, num_newvars2 = e2e_pipeline(input_list, 2, False)
 # print("\n")
 #
 # print(output_list == output_list2)

@@ -14,10 +14,11 @@ input_list = [{0: 53.550050047480966, 1: 33.01363408349268, 2: 61.97298042049891
 
 
 
-pbf2 = PyPBFFloat()
-pbf2 = parse_input_dict(pbf2, input_list)
-pbf2.shrink()
-pbf2.print()
+# pbf2 = PyPBFFloat()
+# pbf2 = parse_input_dict(pbf2, input_list)
+# pbf2.shrink()
+# pbf2.print()
+
 
 
 

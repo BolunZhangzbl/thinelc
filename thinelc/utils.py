@@ -32,7 +32,6 @@ def reduce(pbf, qpbf, mode, newvar):
         pbf_tmp = pbf
         pbf_tmp.reduce_higher(3)
         pbf_tmp.to_quadratic(qpbf, newvar)
-
     elif mode == 1:
         pbf_tmp = pbf
         pbf_tmp.reduce_higher_approx()
@@ -149,6 +148,7 @@ def e2e_pipeline(input_list, mode, use_int=True):
     ### 2. Perform ELC reduction, pbf -> qpbf
     qpbf = PyPBFInt() if use_int else PyPBFFloat()
     reduce(pbf, qpbf, mode, newvar)
+
     ### 3. Parse ELC polynomial, qpbf -> output list
     str_qpbf = qpbf.get_string()
     output_list = parse_polynomial(str_qpbf, quadratic=True, use_int=use_int)
