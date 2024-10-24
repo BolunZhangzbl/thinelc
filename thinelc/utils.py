@@ -142,20 +142,20 @@ def parse_input_dict(pbf, input_list):
 def e2e_pipeline(input_list, mode, use_int=True):
 
     ### 1. Parse the input list to ELC polynomial
-    pbf = PyPBFInt() if use_int else PyPBFFloat(20)
+    pbf = PyPBFInt() if use_int else PyPBFFloat()
     pbf = parse_input_dict(pbf, input_list)
-    num_vars = len(input_list) - 1
-    newvar = num_vars   # the idx of new variables
+    newvar = pbf.max_id() + 1   # the idx of new variables
 
     ### 2. Perform ELC reduction, pbf -> qpbf
-    qpbf = PyPBFInt() if use_int else PyPBFFloat(20)
-    reduce(pbf, qpbf, mode, 4)
-
+    qpbf = PyPBFInt() if use_int else PyPBFFloat()
+    reduce(pbf, qpbf, mode, newvar)
     ### 3. Parse ELC polynomial, qpbf -> output list
     str_qpbf = qpbf.get_string()
     output_list = parse_polynomial(str_qpbf, quadratic=True, use_int=use_int)
 
-    return output_list
+    num_newvars = qpbf.max_id() - pbf.max_id()
+
+    return output_list, num_newvars
 
 
 

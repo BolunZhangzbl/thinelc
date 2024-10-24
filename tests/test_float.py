@@ -39,7 +39,7 @@ input_list = [{0: 1.455467, 1: 4.223454, 2: -1.823453, 3: 2.752398},
               {(0,1,2): 0.646425, (0,2,3):-1.024744, (0,1,3):-1.024744},
               {(0,1,2,3):-0.975256},
               0.000000]
-save_data(input_list, os.path.join(abs_path, "Q_4_matrix_float.pkl"))
+# save_data(input_list, os.path.join(abs_path, "Q_4_matrix_float.pkl"))
 
 pbf2 = PyPBFFloat()
 pbf2 = parse_input_dict(pbf2, input_list)
@@ -58,12 +58,12 @@ print("mode 0: ")
 output_list = e2e_pipeline(input_list, 0, False)
 print("\n")
 
-print("mode 1: ")
-output_list1 = e2e_pipeline(input_list, 1, False)
-print("\n")
-
-print("mode 2: ")
-output_list2 = e2e_pipeline(input_list, 2, False)
-print("\n")
-
-print(output_list == output_list2)
+# print("mode 1: ")
+# output_list1 = e2e_pipeline(input_list, 1, False)
+# print("\n")
+#
+# print("mode 2: ")
+# output_list2 = e2e_pipeline(input_list, 2, False)
+# print("\n")
+#
+# print(output_list == output_list2)
