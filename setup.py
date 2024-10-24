@@ -4,18 +4,6 @@ import subprocess
 import os
 import sys
 
-# include_path = os.path.abspath(os.path.dirname(__file__))
-
-class TestCommand(install):
-    def run(self):
-
-        install.run(self)
-        test_result = subprocess.call([os.path.join(os.path.dirname(__file__), "tests", "test.py")])
-
-        if test_result != 0:
-            raise Exception("Tests failed. Installation aborted.")
-        else:
-            print("All tests passed! Installation Successful.")
 
 class LazyCythonize(list):
     def __init__(self, callback):
@@ -43,15 +31,6 @@ else:
     extra_compile_args = ["-std=c++11", "-Wall", "-Wextra", "-O3"]
     extra_link_args = ["-g"]
 
-extensions = [
-    Extension(
-        name="thinelc.thinelc",
-        sources=["thinelc/thinelc.pyx"],
-        language="c++",   
-        extra_compile_args=extra_compile_args,
-        extra_link_args=extra_link_args,
-    )
-]
 
 def extensions_func():
     from Cython.Build import cythonize
