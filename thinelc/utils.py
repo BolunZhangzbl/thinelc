@@ -30,7 +30,7 @@ def reduce(pbf, qpbf, mode, newvar):
 
     if mode == 0:
         pbf_tmp = pbf
-        pbf_tmp.reduce_higher()
+        pbf_tmp.reduce_higher(3)
         pbf_tmp.to_quadratic(qpbf, newvar)
 
     elif mode == 1:
@@ -146,24 +146,14 @@ def e2e_pipeline(input_list, mode, use_int=True):
     pbf = parse_input_dict(pbf, input_list)
     num_vars = len(input_list) - 1
     newvar = num_vars   # the idx of new variables
-    print("Higher-Order Function: ")
-    pbf.shrink()
-    pbf.print()
-    print("\n")
 
     ### 2. Perform ELC reduction, pbf -> qpbf
     qpbf = PyPBFInt() if use_int else PyPBFFloat(20)
     reduce(pbf, qpbf, mode, 4)
-    print("Quadratic Function: ")
-    qpbf.shrink()
-    qpbf.print()
-    print("\n")
 
     ### 3. Parse ELC polynomial, qpbf -> output list
     str_qpbf = qpbf.get_string()
     output_list = parse_polynomial(str_qpbf, quadratic=True, use_int=use_int)
-    print("Output List: ")
-    print(output_list)
 
     return output_list
 

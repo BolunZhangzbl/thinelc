@@ -22,5 +22,5 @@ pbf2.print()
 
 
 print("test e2e_pipeline: ")
-output_list = e2e_pipeline(input_list, mode=1, use_int=False)
+output_list = e2e_pipeline(input_list, mode=0, use_int=False)
 print("\n")

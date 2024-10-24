@@ -75,8 +75,8 @@ cdef public class PyPBFInt[object PyObject_PyPBFInt, type PyPBFInt]:
     def print(self):
         self.c_pbf.print()
 
-    def reduce_higher(self):
-        self.c_pbf.reduceHigher(3)
+    def reduce_higher(self, int mindeg=3):
+        self.c_pbf.reduceHigher(mindeg)
 
     def reduce_higher_approx(self):
         self.c_pbf.reduceHigherApprox()
@@ -147,8 +147,8 @@ cdef public class PyPBFFloat[object PyObject_PyPBFFloat, type PyPBFFloat]:
     def print(self):
         self.c_pbf.print()
 
-    def reduce_higher(self):
-        self.c_pbf.reduceHigher(3)
+    def reduce_higher(self, int mindeg=3):
+        self.c_pbf.reduceHigher(mindeg)
 
     def reduce_higher_approx(self):
         self.c_pbf.reduceHigherApprox()
