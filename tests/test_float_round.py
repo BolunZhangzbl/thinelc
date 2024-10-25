@@ -39,19 +39,33 @@ input_list = [{0: 1.455467, 1: 4.223454, 2: -1.823453, 3: 2.752398},
               {(0,1,2): 0.646425, (0,2,3):-1.024744, (0,1,3):-1.024744},
               {(0,1,2,3):-0.975256},
               0.000000]
+input_list = convert_values(input_list)
+print(input_list)
+# save_data(input_list, os.path.join(abs_path, "Q_4_matrix_float.pkl"))
+
+# pbf2 = PyPBFFloat()
+# pbf2 = parse_input_dict(pbf2, input_list)
+# pbf2.shrink()
+# pbf2.print()
+#
+#
+# print(pbf.get_string() == pbf2.get_string())
+# print("\n")
+#
+# qpbf = PyPBFFloat()
 
 
 print("test e2e_pipeline: \n")
 print("mode 0: ")
-output_list, num_newvars = e2e_pipeline(input_list, mode=0, use_int=False)
+output_list, num_newvars = e2e_pipeline(input_list, mode=0, use_int=True)
 print("\n")
 
 print("mode 1: ")
-output_list1, num_newvars1 = e2e_pipeline(input_list, mode=1, use_int=False)
+output_list1, num_newvars1 = e2e_pipeline(input_list, mode=1, use_int=True)
 print("\n")
 
 print("mode 2: ")
-output_list2, num_newvars2 = e2e_pipeline(input_list, mode=2, use_int=False)
+output_list2, num_newvars2 = e2e_pipeline(input_list, mode=2, use_int=True)
 print("\n")
 #
 # print(output_list == output_list2)

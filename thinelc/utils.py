@@ -11,6 +11,18 @@ from thinelc import PyPBFInt, PyPBFFloat
 
 # -- Functions
 
+def convert_values(input_list, round_digit=8):
+    assert isinstance(round_digit, int)
+    assert round_digit <= 8
+    for item in input_list:
+        if isinstance(item, dict):  # Check if item is a dictionary
+            for key in item:
+                if isinstance(item[key], float):  # Check if the value is a float
+                    # Round to 10 decimal places and then convert to integer
+                    item[key] = int(round(item[key], round_digit) * (10 ** round_digit))
+    return input_list
+
+
 def save_data(data, filepath):
     with open(filepath, 'wb') as f:
         pickle.dump(data, f)
@@ -145,6 +157,10 @@ def e2e_pipeline(input_list, mode, use_int=True):
     pbf = parse_input_dict(pbf, input_list)
     newvar = pbf.max_id() + 1   # the idx of new variables
 
+    pbf.shrink()
+    pbf.print()
+    print("\n")
+
     ### 2. Perform ELC reduction, pbf -> qpbf
     qpbf = PyPBFInt() if use_int else PyPBFFloat()
     reduce(pbf, qpbf, mode, newvar)
@@ -152,6 +168,12 @@ def e2e_pipeline(input_list, mode, use_int=True):
     ### 3. Parse ELC polynomial, qpbf -> output list
     str_qpbf = qpbf.get_string()
     output_list = parse_polynomial(str_qpbf, quadratic=True, use_int=use_int)
+
+    qpbf.shrink()
+    qpbf.print()
+    print("\n")
+    print(output_list)
+    print("\n")
 
     num_newvars = qpbf.max_id() - pbf.max_id()
 
