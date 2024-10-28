@@ -25,5 +25,5 @@ input_list = convert_values(input_list, round_digit=6)
 
 
 print("test e2e_pipeline: ")
-output_list1, num_newvars = e2e_pipeline(input_list, mode=0, use_int=True)
+output_list1, num_newvars = e2e_pipeline(input_list, mode=0, use_int=True, display=False)
 print("\n")

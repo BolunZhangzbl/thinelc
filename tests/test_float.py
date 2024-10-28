@@ -43,15 +43,15 @@ input_list = [{0: 1.455467, 1: 4.223454, 2: -1.823453, 3: 2.752398},
 
 print("test e2e_pipeline: \n")
 print("mode 0: ")
-output_list, num_newvars = e2e_pipeline(input_list, mode=0, use_int=False)
+output_list, num_newvars = e2e_pipeline(input_list, mode=0, use_int=False, display=False)
 print("\n")
 
 print("mode 1: ")
-output_list1, num_newvars1 = e2e_pipeline(input_list, mode=1, use_int=False)
+output_list1, num_newvars1 = e2e_pipeline(input_list, mode=1, use_int=False, display=False)
 print("\n")
 
 print("mode 2: ")
-output_list2, num_newvars2 = e2e_pipeline(input_list, mode=2, use_int=False)
+output_list2, num_newvars2 = e2e_pipeline(input_list, mode=2, use_int=False, display=False)
 print("\n")
 #
 # print(output_list == output_list2)
