@@ -39,7 +39,7 @@ input_list = [{0: 1.455467, 1: 4.223454, 2: -1.823453, 3: 2.752398},
               {(0,1,2): 0.646425, (0,2,3):-1.024744, (0,1,3):-1.024744},
               {(0,1,2,3):-0.975256},
               0.000000]
-input_list = convert_values(input_list)
+input_list = convert_values(input_list, round_digit=6)
 print(input_list)
 # save_data(input_list, os.path.join(abs_path, "Q_4_matrix_float.pkl"))
 
