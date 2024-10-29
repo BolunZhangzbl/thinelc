@@ -23,5 +23,6 @@ input_list = [{0: 53.550050047480966, 1: 33.01363408349268, 2: 61.97298042049891
 
 
 print("test e2e_pipeline: ")
-output_list1, num_newvars = e2e_pipeline(input_list, mode=0, use_int=False, display=False)
+output_list1, num_newvars = e2e_pipeline(input_list, mode=0, use_int=False, display=True)
+print(num_newvars)
 print("\n")

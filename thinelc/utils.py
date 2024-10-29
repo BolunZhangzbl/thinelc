@@ -1,6 +1,7 @@
 # -- Public Imports
 import os.path
 import re
+import random
 import pickle
 
 # -- Private Imports
@@ -11,6 +12,27 @@ from thinelc import PyPBFInt, PyPBFFloat
 
 # -- Functions
 
+def generate_random_list(num_vars, max_val, min_val, dtype):
+    assert dtype in (int, float)
+    result = []
+
+    # Linear term coefficients
+    linear_terms = {i: dtype(random.uniform(min_val, max_val)) for i in range(num_vars)}
+    result.append(linear_terms)
+
+    # Higher-degree terms up to num_vars
+    for degree in range(2, num_vars + 1):
+        terms = {}
+        indices = [(i, j) for i in range(num_vars) for j in range(i + 1, num_vars)]
+        for idx in indices:
+            terms[idx] = dtype(random.uniform(min_val, max_val))
+        result.append(terms)
+
+    # Constant term
+    result.append({0: dtype(0)})
+    return result
+
+
 def convert_values(input_list, round_digit=8):
     assert isinstance(round_digit, int)
     assert round_digit <= 8
@@ -19,7 +41,10 @@ def convert_values(input_list, round_digit=8):
             for key in item:
                 if isinstance(item[key], float):  # Check if the value is a float
                     # Round to 10 decimal places and then convert to integer
-                    item[key] = int(round(item[key], round_digit) * (10 ** round_digit))
+                    if round_digit > 0:
+                        item[key] = int(round(item[key], round_digit) * (10 ** round_digit))
+                    else:
+                        item[key] = float(item[key] * (10 ** round_digit))
     return input_list
 
 
@@ -37,7 +62,7 @@ def load_data(filepath):
 
 
 def reduce(pbf, qpbf, mode, newvar):
-    assert mode in (0, 1, 2)
+    assert mode in (0, 1, 2, 3)
     assert isinstance(newvar, int)
 
     if mode == 0:
@@ -48,9 +73,12 @@ def reduce(pbf, qpbf, mode, newvar):
         pbf_tmp = pbf
         pbf_tmp.reduce_higher_approx()
         pbf_tmp.to_quadratic(qpbf, newvar)
-    else:
+    elif mode == 2:
         pbf_tmp = pbf
         pbf_tmp.to_quadratic(qpbf, newvar)
+    else:
+        pbf_tmp = pbf
+        pbf_tmp.to_quadratic_tin(qpbf, newvar, )
 
 
 def convert_numeric_string(num_str):
