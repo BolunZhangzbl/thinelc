@@ -1,8 +1,9 @@
 # -- Public Imports
-import os.path
+import os
 import re
 import random
 import pickle
+from itertools import combinations
 
 # -- Private Imports
 from thinelc import PyPBFInt, PyPBFFloat
@@ -12,24 +13,36 @@ from thinelc import PyPBFInt, PyPBFFloat
 
 # -- Functions
 
-def generate_random_list(num_vars, max_val, min_val, dtype):
+def generate_random_list(num_vars, max_val, min_val, dtype, max_degree=4, sample=None):
     assert dtype in (int, float)
     result = []
 
-    # Linear term coefficients
+    # Linear terms
     linear_terms = {i: dtype(random.uniform(min_val, max_val)) for i in range(num_vars)}
     result.append(linear_terms)
 
     # Higher-degree terms up to num_vars
     for degree in range(2, num_vars + 1):
         terms = {}
-        indices = [(i, j) for i in range(num_vars) for j in range(i + 1, num_vars)]
+        indices = list(combinations(range(num_vars), degree))
         for idx in indices:
             terms[idx] = dtype(random.uniform(min_val, max_val))
         result.append(terms)
 
     # Constant term
-    result.append({0: dtype(0)})
+    result.append(dtype(random.uniform(min_val, max_val)))
+
+    # Set Max Degree
+    result = result[:max_degree] + [result[-1]]
+
+    # Sample certain elements from higher terms
+    if sample:
+        assert isinstance(sample, int)
+        for idx, dict_higher in enumerate(result[1:-1], start=1):
+            sampled_keys = random.sample(list(dict_higher.keys()), sample)
+            sampled_dict = {key: dict_higher[key] for key in sampled_keys}
+            # sampled_dict = dict(list(dict_higher.items())[:sample])
+            result[idx] = sampled_dict   # starts from degree 3
     return result
 
 
@@ -176,6 +189,31 @@ def parse_input_dict(pbf, input_list):
                 vals[-1] = coef
                 pbf.add_higher_term(order, vars, vals)
     return pbf
+
+
+def random_test(pbf, num_vars, max_val, min_val, sample=20):
+    # Linear Terms
+    for i in range(num_vars):
+        pbf.add_unary_term(i, random.uniform(min_val, max_val), random.uniform(min_val, max_val))
+
+    # Quadratic Term
+    for i in range(num_vars-1):
+        for j in range(i+1, num_vars):
+            pbf.add_pairwise_term(i, j, random.uniform(min_val, max_val), random.uniform(min_val, max_val),
+                                  random.uniform(min_val, max_val), random.uniform(min_val, max_val))
+
+    # Higher Term
+    for degree in range(3, 5):
+        indices = list(combinations(range(num_vars), degree))
+        if sample is not None:
+            for i in range(sample):
+                vars = random.choice(indices)
+                vals = [random.randint(min_val, max_val) for _ in range(2**degree)]
+                pbf.add_higher_term(degree, vars, vals)
+        else:
+            for vars in indices:
+                vals = [random.randint(min_val, max_val) for _ in range(2 ** degree)]
+                pbf.add_higher_term(degree, vars, vals)
 
 
 def e2e_pipeline(input_list, mode, use_int=True, display=False):
